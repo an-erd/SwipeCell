@@ -161,14 +161,16 @@ struct DismissSwipeCellForScrollView: ViewModifier {
             }
         }
         .onPreferenceChange(ScrollViewPreferencKey.self) { preference in
-            if topleadingY == nil {
-                topleadingY = preference.first!.topLeadingY
-            }
-            if abs(topleadingY! - preference.first!.topLeadingY) < 10 {
-                NotificationCenter.default.post(name: .swipeCellReset, object: nil)
-            }
-            else {
-                topleadingY = preference.first!.topLeadingY
+            DispatchQueue.main.async {
+                if topleadingY == nil {
+                    topleadingY = preference.first!.topLeadingY
+                }
+                if abs(topleadingY! - preference.first!.topLeadingY) < 10 {
+                    NotificationCenter.default.post(name: .swipeCellReset, object: nil)
+                }
+                else {
+                    topleadingY = preference.first!.topLeadingY
+                }
             }
         }
     }
@@ -209,17 +211,19 @@ struct DismissSwipeCellForScrollViewForLazy: ViewModifier {
                 }
             )
             .onPreferenceChange(ScrollViewPreferencKeyForLazy.self) { preference in
-                if cellinfos.count == 0 {
-                    DispatchQueue.main.async {
-                        cellinfos = preference
+                DispatchQueue.main.async {
+                    if cellinfos.count == 0 {
+                        DispatchQueue.main.async {
+                            cellinfos = preference
+                        }
                     }
-                }
-                if cellinfos != preference {
-                    NotificationCenter.default.post(name: .swipeCellReset, object: nil)
-                }
-                else {
-                    DispatchQueue.main.async {
-                        cellinfos = preference
+                    if cellinfos != preference {
+                        NotificationCenter.default.post(name: .swipeCellReset, object: nil)
+                    }
+                    else {
+                        DispatchQueue.main.async {
+                            cellinfos = preference
+                        }
                     }
                 }
             }
